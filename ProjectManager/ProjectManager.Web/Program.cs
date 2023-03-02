@@ -20,6 +20,8 @@ builder.Services.ConfigureCore(builder.Configuration);
 
 var app = builder.Build();
 
+app.CoreInitDatabase();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 

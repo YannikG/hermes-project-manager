@@ -349,3 +349,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 ProjectManager/ProjectManager.Web/Database.sqlite
+/ProjectManager/ProjectManager.Web/Database.sqlite-wal
+/ProjectManager/ProjectManager.Web/Database.sqlite-shm
