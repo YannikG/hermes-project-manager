@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Core.Entities;
 using ProjectManager.Core.Services;
+using ProjectManager.Web.Models;
 
 namespace ProjectManager.Web.Controllers
 {
@@ -35,16 +36,36 @@ namespace ProjectManager.Web.Controllers
 
         // POST api/<ProjectsController>
         [HttpPost]
-        public async Task<ProjectEntity> PostAsync([FromBody] ProjectEntity project)
+        public async Task<ProjectEntity> PostAsync([FromBody] ProjectCreateUpdateModel model)
         {
-            return await _projectService.CreateProjectAsync(project);
+            var projectEntity = new ProjectEntity()
+            {
+                ConfigWorkHoursPerDay = model.ConfigWorkHoursPerDay,
+                ConfigWorkHoursPerWeek = model.ConfigWorkHoursPerWeek,
+                Description = model.Description,
+                ProjectEndDate = model.ProjectEndDate,
+                ProjectStartDate = model.ProjectStartDate,
+                Title = model.Title
+            };
+
+            return await _projectService.CreateProjectAsync(projectEntity);
         }
 
         // PUT api/<ProjectsController>/5
         [HttpPut("{id}")]
-        public async Task<ProjectEntity?> Put(int id, [FromBody] ProjectEntity project)
+        public async Task<ProjectEntity?> Put(int id, [FromBody] ProjectCreateUpdateModel model)
         {
-            return await _projectService.UpdateProjectAsync(id, project);
+            var projectEntity = new ProjectEntity()
+            {
+                ConfigWorkHoursPerDay = model.ConfigWorkHoursPerDay,
+                ConfigWorkHoursPerWeek = model.ConfigWorkHoursPerWeek,
+                Description = model.Description,
+                ProjectEndDate = model.ProjectEndDate,
+                ProjectStartDate = model.ProjectStartDate,
+                Title = model.Title
+            };
+
+            return await _projectService.UpdateProjectAsync(id, projectEntity);
         }
 
         // DELETE api/<ProjectsController>/5
@@ -56,21 +77,31 @@ namespace ProjectManager.Web.Controllers
 
         // POST api/<ProjectsController>/5/timelineGroups
         [HttpPost("{projectId}/timelineGroups")]
-        public async Task<TimelineGroupEntity> TimelineGroupPostAsync([FromRoute] int projectId, [FromBody] TimelineGroupEntity timelineGroup)
+        public async Task<TimelineGroupEntity> TimelineGroupPostAsync([FromRoute] int projectId, [FromBody] TimelineGroupCreateUpdateModel model)
         {
-            timelineGroup.ProjectId = projectId;
+            var timelineGroupEntity = new TimelineGroupEntity()
+            {
+                Description = model.Description,
+                ProjectId = projectId,
+                Title = model.Title
+            };
 
-            return await _timelineGroupService.CreateAsync(timelineGroup);
+            return await _timelineGroupService.CreateAsync(timelineGroupEntity);
         }
 
 
         // PUT api/<ProjectsController>/5/timelineGroups/6
         [HttpPut("{projectId}/timelineGroups/{id}")]
-        public async Task<TimelineGroupEntity> TimelineGroupPutAsync([FromRoute] int projectId, [FromRoute] int id, [FromBody] TimelineGroupEntity timelineGroup)
+        public async Task<TimelineGroupEntity> TimelineGroupPutAsync([FromRoute] int projectId, [FromRoute] int id, [FromBody] TimelineGroupCreateUpdateModel model)
         {
-            timelineGroup.ProjectId = projectId;
+            var timelineGroupEntity = new TimelineGroupEntity()
+            {
+                Description = model.Description,
+                ProjectId = projectId,
+                Title = model.Title
+            };
 
-            return await _timelineGroupService.UpdateAsync(id, timelineGroup);
+            return await _timelineGroupService.UpdateAsync(id, timelineGroupEntity);
         }
 
         // DELETE api/<ProjectsController>/5/timelineGroups/6
@@ -82,9 +113,18 @@ namespace ProjectManager.Web.Controllers
 
         // POST api/<ProjectsController>/timelineGroups/6/timelineItmes
         [HttpPost("timelineGroups/{groupId}/timelineItems")]
-        public async Task<TimelineItemEntity> TimelineItemPostAsync([FromRoute] int groupId, [FromBody] TimelineItemEntity timelineItemEntity)
+        public async Task<TimelineItemEntity> TimelineItemPostAsync([FromRoute] int groupId, [FromBody] TimelineItemCreateUpdateModel model)
         {
-            timelineItemEntity.TimelineGroupId = groupId;
+            var timelineItemEntity = new TimelineItemEntity()
+            {
+                Title = model.Title,
+                Description = model.Description,
+                EndDateTime = model.EndDateTime,
+                StartDateTime = model.StartDateTime,
+                Status = model.Status,
+                TimelineGroupId = groupId,
+                Type = model.Type
+            };
 
             return await _timelineItemService.CreateAsync(timelineItemEntity);
         }
@@ -92,13 +132,21 @@ namespace ProjectManager.Web.Controllers
 
         // PUT api/<ProjectsController>/timelineGroups/6/timelineItmes/7
         [HttpPut("timelineGroups/{groupId}/timelineItems/{id}")]
-        public async Task<TimelineItemEntity> TimelineItemPostAsync([FromRoute] int groupId, [FromRoute] int id, [FromBody] TimelineItemEntity timelineItemEntity)
+        public async Task<TimelineItemEntity> TimelineItemPostAsync([FromRoute] int groupId, [FromRoute] int id, [FromBody] TimelineItemCreateUpdateModel model)
         {
-            timelineItemEntity.TimelineGroupId = groupId;
-
+            var timelineItemEntity = new TimelineItemEntity()
+            {
+                Title = model.Title,
+                Description = model.Description,
+                EndDateTime = model.EndDateTime,
+                StartDateTime = model.StartDateTime,
+                Status = model.Status,
+                TimelineGroupId = groupId,
+                Type = model.Type
+            };
             return await _timelineItemService.UpdateAsync(id, timelineItemEntity);
         }
-
+         
         // DELETE api/<ProjectsController>/timelineGroups/6/timelineItmes/7
         [HttpDelete("timelineGroups/{groupId}/timelineItems/{id}")]
         public async Task TimelineItemDeleteAsync([FromRoute] int groupId, [FromRoute] int id)
