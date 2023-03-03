@@ -20,6 +20,8 @@ namespace ProjectManager.Core
 
 			// Register serivces
 			services.AddScoped<ProjectService>();
+			services.AddScoped<TimelineGroupService>();
+			services.AddScoped<TimelineItemService>();
 
 			return services;
 		}
