@@ -9,8 +9,8 @@ namespace ProjectManager.Core.Entities
 
 		public int ProjectId { get; set; }
 		public ProjectEntity Project { get; set; }
-
-		public ICollection<TimelineItemEntity> TimelineItems { get; set; }
+        public int SortRank { get; set; }
+        public ICollection<TimelineItemEntity> TimelineItems { get; set; }
 	}
 }
 
