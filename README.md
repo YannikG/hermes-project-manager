@@ -16,3 +16,6 @@ To ensure that the API is not tightly coupled to the entity framework, it intera
 
 ## Wiki / Further documentation
 The wiki provides details on the Service-Repository pattern, how the business logic interacts with the data access layer, and the structure of the API. It also provides information on how to set up the development environment, including instructions on how to clone the project from the repository. The wiki is an excellent resource for those looking to get started with the project, providing detailed technical information and step-by-step instructions for setting up the development environment and contributing to the project.
+
+# Support my work
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T7JEP5Q)
