@@ -65,6 +65,7 @@ import { reactive } from 'vue';
         fetch("/api/projects", request)
             .then(r => {
                 isLeading = false;
+                resetForm();
             })
             .catch(error => {
                 console.error(error);
