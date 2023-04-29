@@ -16,7 +16,7 @@ import { RouterLink } from 'vue-router'
                     <RouterLink to="/help">Hilfe</RouterLink>
                 </li>
                 <li>
-                    <RouterLink role="button" to="/create">Neues Projekt erstellen</RouterLink>
+                    <RouterLink role="button" to="/projects/new">Neues Projekt erstellen</RouterLink>
                 </li>
             </ul>
         </nav>
