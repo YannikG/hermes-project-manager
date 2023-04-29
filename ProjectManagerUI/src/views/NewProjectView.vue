@@ -9,13 +9,23 @@
             <label for="description">Beschreibung</label>
             <textarea v-model="newProject.description"></textarea>
             <div class="grid">
+                <label for="projectStartDate">
+                    Projekt Startdatum
+                    <input name="projectStartDate" type="date" v-model="newProject.projectStartDate">
+                </label>
+                <label for="projectEndDate">
+                    Projekt Enddatum
+                    <input name="projectEndDate" type="date" v-model="newProject.projectEndDate">
+                </label>
+            </div>
+            <div class="grid">
                 <label for="configWorkHoursPerDay">
                     Stunden pro Arbeitstag
-                    <input name="configWorkHoursPerDay" type="date" v-model="newProject.configWorkHoursPerDay">
+                    <input name="configWorkHoursPerDay" type="number" v-model="newProject.configWorkHoursPerDay">
                 </label>
                 <label for="configWorkHoursPerWeek">
                     Stunden pro Woche
-                    <input name="configWorkHoursPerWeek" type="date" v-model="newProject.configWorkHoursPerWeek">
+                    <input name="configWorkHoursPerWeek" type="number" v-model="newProject.configWorkHoursPerWeek">
                 </label>
             </div>
         </form>
@@ -38,12 +48,28 @@ import { reactive } from 'vue';
         description: "",
         configWorkHoursPerDay: 8,
         configWorkHoursPerWeek: 40,
-        projectStartDate: Date.now(),
-        projectEndDate: Date.now()
+        projectStartDate: new Date(Date.now()),
+        projectEndDate: new Date(Date.now())
     });
 
     const createProject = ():void => {
-        console.log(newProject);
+        isLeading = true;
+
+        let request = {
+            method: "POST",
+            // don't forget the fucking HEADERS!
+            headers: new Headers({'content-type': 'application/json'}),
+            body: JSON.stringify(newProject)
+        };
+
+        fetch("/api/projects", request)
+            .then(r => {
+                isLeading = false;
+            })
+            .catch(error => {
+                console.error(error);
+                error = error;
+            })
     };
 
     const resetForm = ():void => {
@@ -51,8 +77,8 @@ import { reactive } from 'vue';
         newProject.description = "";
         newProject.configWorkHoursPerDay = 8;
         newProject.configWorkHoursPerWeek = 40;
-        newProject.projectStartDate = Date.now();
-        newProject.projectEndDate = Date.now();
+        newProject.projectStartDate = new Date(Date.now());
+        newProject.projectEndDate = new Date(Date.now());
     };
 
 
