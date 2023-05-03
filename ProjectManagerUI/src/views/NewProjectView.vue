@@ -31,16 +31,19 @@
         </form>
         <div class="grid">
             <button class="secondary" v-on:click="resetForm()">Zurücksetzten</button>
-            <button v-bind:aria-busy="isLeading" v-on:click="createProject()">Erstellen</button>
+            <button v-on:click="createProject()">Erstellen</button>
         </div>
     </main>
 </template>
 
 <script setup lang="ts">
+import type { ProjectModel } from '@/models/project.model';
+import { useProjectStore } from '@/stores/project.store';
+
 import { reactive } from 'vue';
+    const store = useProjectStore();
 
     let error = "";
-    let isLeading = false;
 
     // reactive weil ansonsten die Werte im Template nicht angepasst werden.
     let newProject = reactive({
@@ -50,27 +53,11 @@ import { reactive } from 'vue';
         configWorkHoursPerWeek: 40,
         projectStartDate: new Date(Date.now()),
         projectEndDate: new Date(Date.now())
-    });
+    } as ProjectModel);
 
     const createProject = ():void => {
-        isLeading = true;
-
-        let request = {
-            method: "POST",
-            // don't forget the fucking HEADERS!
-            headers: new Headers({'content-type': 'application/json'}),
-            body: JSON.stringify(newProject)
-        };
-
-        fetch("/api/projects", request)
-            .then(r => {
-                isLeading = false;
-                resetForm();
-            })
-            .catch(error => {
-                console.error(error);
-                error = error;
-            })
+        store.addNewProject(newProject)
+            .then(() => resetForm());
     };
 
     const resetForm = ():void => {

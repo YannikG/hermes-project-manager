@@ -1,23 +1,14 @@
 <script lang="ts">
+import { useProjectStore } from '@/stores/project.store';
 import { onMounted, ref, type Ref } from 'vue';
 
 export default {
   setup() {
-    const projects: Ref<any[]> = ref<any[]>([]);
     const isLoading: Ref<boolean> = ref(false);
-    onMounted(() => {
-      isLoading.value = true;
-      fetch("/api/projects")
-        .then(response => response.json())
-        .then(data => {
-          projects.value = data;
-          isLoading.value = false;
-        })
-    })
+    const store = useProjectStore();
 
     return {
-      projects,
-      isLoading
+      store
     }
   }
 }
@@ -27,9 +18,8 @@ export default {
 <template>
   <main class="container">
     <h1>Projekte</h1>
-    <progress v-if="isLoading"></progress>
     <ul>
-      <li v-for=" p in projects" :key="p.id">{{ p.title  }}</li>
+      <li v-for=" p in store.$state.projects" :key="p.id as number">{{ p.title  }}</li>
     </ul>
   </main>
 </template>
