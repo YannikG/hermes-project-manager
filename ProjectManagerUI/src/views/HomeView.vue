@@ -1,12 +1,9 @@
 <script lang="ts">
 import { useProjectStore } from '@/stores/project.store';
-import { onMounted, ref, type Ref } from 'vue';
 
 export default {
   setup() {
-    const isLoading: Ref<boolean> = ref(false);
     const store = useProjectStore();
-
     return {
       store
     }
@@ -18,8 +15,24 @@ export default {
 <template>
   <main class="container">
     <h1>Projekte</h1>
-    <ul>
-      <li v-for=" p in store.$state.projects" :key="p.id as number">{{ p.title  }}</li>
-    </ul>
+    <div class="row">
+      <div class="col-xs-12 col-md-6" v-for=" p in store.$state.projects" :key="p.id as number">
+        <article>
+          <div class="row">
+            <div class="col-xs-12">
+              <h1>{{ p.title }}</h1>
+              <p>
+                {{ p.description }}
+              </p>
+            </div>
+          </div> 
+          <div class="row end-xs">
+              <div class="col-xs-12 col-md-6">
+                  <RouterLink :to="{ name: 'detailProject', params : {id: p.id }}">Zum Projekt</RouterLink>
+              </div>
+          </div>
+        </article>
+      </div>
+    </div>
   </main>
 </template>

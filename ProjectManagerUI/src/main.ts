@@ -5,6 +5,8 @@ import { createPinia } from 'pinia'
 
 import "@picocss/pico/css/pico.min.css";
 import "@picocss/pico/css/themes/default.min.css";
+import "flexboxgrid/css/flexboxgrid.min.css/";
+
 import { useProjectStore } from './stores/project.store';
 
 const app = createApp(App)
