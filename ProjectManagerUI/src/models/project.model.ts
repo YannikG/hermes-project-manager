@@ -14,4 +14,16 @@ export interface ProjectTimeLineGroupModel {
     title: string;
     description: string;
     sortRank: number;
+    timelineItems: ProjectTimeLineItemModel[];
+}
+
+export interface ProjectTimeLineItemModel {
+    id: number | null;
+    title: string,
+    description: string;
+    startDateTime: Date;
+    endDateTime: Date;
+    status: number;
+    type: number;
+    sortRank: number;
 }
