@@ -12,11 +12,12 @@
             </div>
         </div>
         <div class="row">
-            
+            <ProjectDetailTable :project="project"></ProjectDetailTable>
         </div>
     </main>
 </template>
 <script setup lang="ts">
+import ProjectDetailTable from '@/components/ProjectDetailTable.vue';
 import { useProjectStore } from '@/stores/project.store';
 
     const props = defineProps(["id"])

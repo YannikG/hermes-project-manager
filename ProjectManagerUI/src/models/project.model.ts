@@ -6,4 +6,12 @@ export interface ProjectModel {
     configWorkHoursPerWeek: number;
     projectStartDate: Date | null;
     projectEndDate: Date | null;
+    timelineGroups: ProjectTimeLineGroupModel[];
+}
+
+export interface ProjectTimeLineGroupModel {
+    id: number | null;
+    title: string;
+    description: string;
+    sortRank: number;
 }
