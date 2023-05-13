@@ -67,12 +67,12 @@ export default {
             </thead>
             <tbody v-for="tg of sortedProject.timelineGroups">
                 <tr class="tg-tr">
-                    <th><strong>{{ tg.title }}</strong></th>
+                    <th><strong>{{ tg.id }} {{ tg.title }}</strong></th>
                     <td colspan="2"></td>
                     <td v-bind:colspan="calcWeeks">{{ tg.description }}</td>
                 </tr>
                 <tr v-for="tli of tg.timelineItems">
-                    <th v-bind:data-tooltip="tli.description" scope="row">{{ tli.title }}</th>
+                    <th v-bind:data-tooltip="tli.description" scope="row">{{ tli.id }} {{ tli.title }}</th>
                     <td>{{ tli.startDateTime }}</td>
                     <td>{{  tli.endDateTime }}</td>
                     <td v-for="w of calcWeeks" >

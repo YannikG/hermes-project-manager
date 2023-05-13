@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Core.Entities;
 using ProjectManager.Core.Services;
 using ProjectManager.Web.Models;
@@ -86,7 +87,12 @@ namespace ProjectManager.Web.Controllers
                 Title = model.Title
             };
 
-            return await _timelineGroupService.CreateAsync(timelineGroupEntity);
+            var dbResult = await _timelineGroupService.CreateAsync(timelineGroupEntity);
+
+            if (dbResult.TimelineItems is null)
+                dbResult.TimelineItems = new List<TimelineItemEntity>();
+
+            return dbResult;
         }
 
 
@@ -101,7 +107,12 @@ namespace ProjectManager.Web.Controllers
                 Title = model.Title
             };
 
-            return await _timelineGroupService.UpdateAsync(id, timelineGroupEntity);
+            var dbResult = await _timelineGroupService.UpdateAsync(id, timelineGroupEntity);
+
+            if (dbResult.TimelineItems is null)
+                dbResult.TimelineItems = new List<TimelineItemEntity>();
+
+            return dbResult;
         }
 
         // DELETE api/<ProjectsController>/5/timelineGroups/6

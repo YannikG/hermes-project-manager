@@ -26,4 +26,5 @@ export interface ProjectTimeLineItemModel {
     status: number;
     type: number;
     sortRank: number;
+    timelineGroupId: number
 }
