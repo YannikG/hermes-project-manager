@@ -2,6 +2,7 @@
 import type { ProjectModel, ProjectTimeLineItemModel } from '@/models/project.model';
 import { calcWeekNumberOfGivenDateBetweenARangeUtil, calcWeeksBetweenTwoDatesUtil } from '@/utils/dates/week-calc.utils';
 import { toRef, type PropType, toRefs, computed } from 'vue';
+import ProjectTimelineItemDisplay from '@/components/ProjectTimelineItemDisplay.vue';
 
 
 export default {
@@ -11,32 +12,24 @@ export default {
             required: true
         }
     },
-    setup(props){        
+    setup(props) {
         const { project } = toRefs(props);
-
         const sortedProject = computed(() => {
-
             let result = project.value;
-
             result.timelineGroups = result.timelineGroups.sort(i => i.sortRank);
             result.timelineGroups.forEach(tlg => {
                 tlg.timelineItems = tlg.timelineItems.sort(tli => tli.sortRank);
             });
-
             return result;
         });
-
         const calcWeeks = computed(() => {
-
             // IMPORTANT:
             // This has to be done this way. When have to create a new Date before we can use the getTime() function.
             // Thanks fucking JavaScript!
             let fromDate = new Date(project.value.projectStartDate as Date);
             let toDate = new Date(project.value.projectEndDate as Date);
-
             return calcWeeksBetweenTwoDatesUtil(fromDate, toDate);
         });
-
         function calcMyWeekNumber(timelineItem: ProjectTimeLineItemModel) {
             // IMPORTANT:
             // This has to be done this way. When have to create a new Date before we can use the getTime() function.
@@ -44,16 +37,15 @@ export default {
             let fromDate = new Date(project.value.projectStartDate as Date);
             let toDate = new Date(project.value.projectEndDate as Date);
             let givenDate = new Date(timelineItem.startDateTime) as Date;
-
             return calcWeekNumberOfGivenDateBetweenARangeUtil(fromDate, toDate, givenDate);
         }
-
         return {
             sortedProject,
             calcWeeks,
             calcMyWeekNumber
-        }
-    }
+        };
+    },
+    components: { ProjectTimelineItemDisplay }
 }
 </script>
 <template>
@@ -71,14 +63,15 @@ export default {
                     <td colspan="2"></td>
                     <td v-bind:colspan="calcWeeks">{{ tg.description }}</td>
                 </tr>
+                <!-- Komponente ProjectTimelineItemDisplay -->
                 <tr v-for="tli of tg.timelineItems">
                     <th v-bind:data-tooltip="tli.description" scope="row">{{ tli.title }}</th>
                     <td>{{ tli.startDateTime }}</td>
                     <td>{{  tli.endDateTime }}</td>
-                    <td v-for="w of calcWeeks" >
-                        <i v-if="calcMyWeekNumber(tli)  == w">
-                            X
-                        </i>
+                    <td v-for="w of calcWeeks">
+                        <div v-if="calcMyWeekNumber(tli)  == w">
+                            <ProjectTimelineItemDisplay v-bind:item="tli"></ProjectTimelineItemDisplay>
+                        </div>
                     </td>
                 </tr>
             </tbody>
