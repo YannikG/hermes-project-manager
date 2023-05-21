@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { ProjectModel, ProjectTimeLineItemModel } from '@/models/project.model';
+import type { ProjectModel, ProjectTimeLineGroupModel, ProjectTimeLineItemModel } from '@/models/project.model';
 import { calcWeekNumberOfGivenDateBetweenARangeUtil, calcWeeksBetweenTwoDatesUtil } from '@/utils/dates/week-calc.utils';
-import { toRef, type PropType, toRefs, computed } from 'vue';
+import { type PropType, toRefs, computed } from 'vue';
 import ProjectTimelineItemDisplay from '@/components/ProjectTimelineItemDisplay.vue';
 
 
@@ -12,7 +12,8 @@ export default {
             required: true
         }
     },
-    setup(props) {
+    emits: ["delete:group", "delete:item"],
+    setup(props, { emit }) {
         const { project } = toRefs(props);
         const sortedProject = computed(() => {
             let result = project.value;
@@ -39,10 +40,20 @@ export default {
             let givenDate = new Date(timelineItem.startDateTime) as Date;
             return calcWeekNumberOfGivenDateBetweenARangeUtil(fromDate, toDate, givenDate);
         }
+        function deleteItem(timelineItem: ProjectTimeLineItemModel) {
+            emit("delete:item", { timelineItem })
+        }
+
+        function deleteGroup(timelineGroup: ProjectTimeLineGroupModel) {
+            emit("delete:group", { timelineGroup })
+        }
+
         return {
             sortedProject,
             calcWeeks,
-            calcMyWeekNumber
+            calcMyWeekNumber,
+            deleteItem,
+            deleteGroup
         };
     },
     components: { ProjectTimelineItemDisplay }
@@ -53,19 +64,26 @@ export default {
         <table>
             <thead>
                 <th scope="col">Beschreibung</th>
+                <th scope="col"></th>
                 <th scope="col">Start Datum</th>
                 <th scope="col">End Datum</th>
                 <th v-for="w of calcWeeks" scope="col">{{ w }}</th>
             </thead>
             <tbody v-for="tg of sortedProject.timelineGroups">
                 <tr class="tg-tr">
-                    <th><strong>{{ tg.id }} {{ tg.title }}</strong></th>
+                    <th><strong>{{ tg.title }}</strong></th>
+                    <td>
+                        <button v-on:click="deleteGroup(tg)" data-tooltip="Gruppe Löschen" class="danger-button small-button">x</button>
+                    </td>
                     <td colspan="2"></td>
                     <td v-bind:colspan="calcWeeks">{{ tg.description }}</td>
                 </tr>
                 <!-- Komponente ProjectTimelineItemDisplay -->
                 <tr v-for="tli of tg.timelineItems">
-                    <th v-bind:data-tooltip="tli.description" scope="row">{{ tli.id }} {{ tli.title }}</th>
+                    <th v-bind:data-tooltip="tli.description" scope="row">{{ tli.title }}</th>
+                    <td>
+                        <button v-on:click="deleteItem(tli)" data-tooltip="Item Löschen" class="danger-button small-button">x</button>
+                    </td>
                     <td>{{ tli.startDateTime }}</td>
                     <td>{{  tli.endDateTime }}</td>
                     <td v-for="w of calcWeeks">

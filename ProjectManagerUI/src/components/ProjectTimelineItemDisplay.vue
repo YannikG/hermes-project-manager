@@ -1,11 +1,5 @@
 <template>
-    <div :class=projectDurationClass>
-        <div >
-            <div v-if="item.type === 0">Meilenstein</div>
-            <div v-else-if="item.type === 1">Task</div>
-            <div v-else>Kein Typ definiert!</div>
-        </div>
-    </div>
+    <div :class=projectDurationClass :data-tooltip="itemTypeText"></div>
 </template>
 
 <script lang="ts">
@@ -23,18 +17,29 @@ import { defineComponent, type PropType, computed } from 'vue';
             const item = props.item;
 
             const projectDurationClass = computed(() => {
-                if (props.item.type === 0) {
+                if (props.item.type == 1) {
                     return 'meilenstein-color';
-                } else if (props.item.type === 1) {
+                } else if (props.item.type == 0) {
                     return 'task-color';
                 } else {
                     return 'no-type-color';
                 }
             });
 
+            const itemTypeText = computed(() => {
+                if (props.item.type == 1) {
+                    return 'Meilenstein';
+                } else if (props.item.type == 0) {
+                    return 'Task';
+                } else {
+                    return 'Kein Typ definiert!';
+                }
+            });
+
             return {
                 item,
-                projectDurationClass
+                projectDurationClass,
+                itemTypeText
             }
         }
     });
@@ -48,23 +53,23 @@ import { defineComponent, type PropType, computed } from 'vue';
 }
 
 .meilenstein-color {
-  background-color: #ff0000;
+  background-color: #E86A33;
   color: white;
-  height: 50px;
-  width: 50px;
+  height: 30px;
+  width: 30px;
 }
 
 .task-color {
-  background-color: #2196f3;
+  background-color: #A6D0DD;
   color: white;
-  height: 50px;
-  width: 50px;
+  height: 30px;
+  width: 30px;
 }
 
 .no-type-color {
   background-color: #9e9e9e;
   color:white;
-  height: 50px;
-  width: 50px;
+  height: 30px;
+  width: 30px;
 }
 </style>

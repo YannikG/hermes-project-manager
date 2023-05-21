@@ -7,7 +7,8 @@
                     {{ project?.title }}
                 </h1>
                 <p>
-                    {{ project?.description }}
+                    {{ project?.description }} <br/>
+                    {{ project?.projectStartDate }} bis {{ project?.projectEndDate }}
                 </p>
             </div>
         </div>
@@ -16,13 +17,22 @@
                 <div class="grid">
                     <button v-on:click="openAddNewGroupModal()">Neue Gruppe</button>
                     <button v-on:click="openAddNewItemToGroupModal()">Neues Item in Gruppe</button>
+                    <button class="danger-button" v-on:click="openRemoveProjectModal()">Projekt löschen</button>
                 </div>
             </div>
         </div>
         <div class="row">
-            <ProjectDetailTable :project="project"></ProjectDetailTable>
+            <ProjectDetailTable v-on:delete:group="deleteGroup($event.timelineGroup)" v-on:delete:item="deleteItem($event.timelineItem)" :project="project"></ProjectDetailTable>
         </div>
+        <!-- Remove Project Modal -->
+        <Modal v-model:open="removeProjectModal">
+            <h3>"{{ project.title }}" wirklich löschen?</h3>
+            <button class="danger-button" v-on:click="removeProject()">Unwiderruflich löschen</button>
+        </Modal>
+
+        <!-- Add New Group Modal -->
         <Modal v-model:open="addNewGroupModal">
+            <h3>Neue Gruppe erstellen</h3>
             <label for="title">Titel</label>
             <input v-model="newGroup.title" name="title">
             <label for="description">Beschreibung</label>
@@ -30,7 +40,9 @@
             <button v-on:click="addNewGroup()">Erstellen</button>
         </Modal>
 
+        <!-- Add New Item Modal -->
         <Modal v-model:open="addNewItemToGroupModal">
+            <h3>Neues Item erstellen</h3>
             <label for="group">Gruppe</label>
             <select v-model="newItem.timelineGroupId">
                 <option v-for="group in project?.timelineGroups" :value="group.id">{{ group.title }}</option>
@@ -39,6 +51,10 @@
             <input v-model="newItem.title" name="title">
             <label for="description">Beschreibung</label>
             <textarea v-model="newItem.description"></textarea>
+            <label for="type">Typ</label>
+            <select v-model="newItem.type">
+                <option v-for="t in itemTypes" :value="t.id">{{ t.title }}</option>
+            </select>
             <div class="grid">
                 <label for="StartDate">
                     Startdatum
@@ -56,38 +72,60 @@
 <script setup lang="ts">
 import ProjectDetailTable from '@/components/ProjectDetailTable.vue';
 import Modal from '@/components/shared/Modal.vue';
-import type { ProjectTimeLineGroupModel, ProjectTimeLineItemModel } from '@/models/project.model';
+import type { ProjectModel, ProjectTimeLineGroupModel, ProjectTimeLineItemModel } from '@/models/project.model';
 import { useProjectStore } from '@/stores/project.store';
 import {computed, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+    // Props.
     const props = defineProps(["id"])
+    
+    // Store and router.
     const store = useProjectStore();
+    const router = useRouter();
 
+    // Load project.
     const project = computed(() => {
-        return store.getProjectById(props.id);
+        return store.getProjectById(props.id) as ProjectModel;
     });
 
+    // New group and item for forms.
     const newGroup = reactive({
         title: "",
         description: "",
         sortRank: 0,
     } as ProjectTimeLineGroupModel );
-
     const newItem = reactive({
         title: "",
         description: "",
         startDateTime: new Date(Date.now()),
         endDateTime: new Date(Date.now()),
         sortRank: 0,
+        type: 0,
     } as ProjectTimeLineItemModel );
 
+    // Modal control refs.
     const addNewGroupModal = ref(false);
     const addNewItemToGroupModal = ref(false);
+    const removeProjectModal = ref(false);
 
+    // Default values.
+    const itemTypes = [{id: 0, title: "Arbeitspaket"}, {id: 1, title: "Meilenstein"}];
+
+    // Project logic.
+    const openRemoveProjectModal = () => {
+        removeProjectModal.value = true;
+    }
+    const removeProject = () => {
+        removeProjectModal.value = false;
+        store.deleteProject(project.value!.id!)
+        router.push("/");
+    }
+
+    // Group logic.
     const openAddNewGroupModal = () => {
         addNewGroupModal.value = true;
     }
-
     const addNewGroup= () => {
         store.addNewGroupToProject(project.value!.id!, newGroup)
             .then(() => {
@@ -97,11 +135,14 @@ import {computed, reactive, ref } from 'vue';
                 newGroup.sortRank = 0;
             });
     }
+    const deleteGroup = (timelineGroup: ProjectTimeLineGroupModel) => {
+        store.deleteGroupFromProject(project.value!.id!, timelineGroup);
+    }
 
+    // Item logic.
     const openAddNewItemToGroupModal = () => {
         addNewItemToGroupModal.value = true;
     }
-
     const addNewTimeLineItem = () => {
         store.addNewTimelineItemToGroup(newItem.timelineGroupId, newItem)
             .then(() => {
@@ -114,5 +155,8 @@ import {computed, reactive, ref } from 'vue';
                 newItem.sortRank = 0;
             });
     }
-
+    const deleteItem = (timelineItem: ProjectTimeLineItemModel) => {
+        console.log(timelineItem);
+        store.deleteTimelineItemFromGroup(project.value.id!, timelineItem);
+    }
 </script>

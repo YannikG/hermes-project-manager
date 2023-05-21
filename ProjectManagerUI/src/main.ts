@@ -5,6 +5,8 @@ import { createPinia } from 'pinia'
 
 import "@picocss/pico/css/pico.min.css";
 import "@picocss/pico/css/themes/default.min.css";
+import "@/assets/global.css";
+
 // Does not work?!
 // import "flexboxgrid/css/flexboxgrid.min.css/";
 

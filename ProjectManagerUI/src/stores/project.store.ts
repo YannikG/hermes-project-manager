@@ -28,13 +28,28 @@ export const useProjectStore = defineStore('projects', {
 
             await fetch("/api/projects", request)
                 .then(async response => {
-                    this.projects.push(await response.json() as ProjectModel);
+                    let backendResponse = await response.json() as ProjectModel;
+                    backendResponse.timelineGroups = [];
+                    this.projects.push(backendResponse);
                 })
                 .catch(error => {
                     console.error(error);
-                    error = error;
             });
         },
+        async deleteProject(projectId: number) {
+            let request = {
+                method: "DELETE"
+            };
+
+            await fetch(`/api/projects/${projectId}`, request)
+                .then(async _ => {
+                    this.projects = this.projects.filter(p => p.id != projectId);
+                })
+                .catch(error => {
+                    console.error(error);
+                });  
+        },
+
         async addNewGroupToProject(projectId: number, group: ProjectTimeLineGroupModel) {
 
             let request = {
@@ -49,17 +64,32 @@ export const useProjectStore = defineStore('projects', {
                 })
                 .catch(error => {
                     console.error(error);
-                    error = error;
             });
         },
+
+        async deleteGroupFromProject(projectId: number, timelineGroup: ProjectTimeLineGroupModel) {
+            let request = {
+                method: "DELETE"
+            };
+
+            await fetch(`/api/projects/${projectId}/timelineGroups/${timelineGroup.id}`, request)
+                .then(async _ => {
+                    this.projects
+                        .find(p => p.id == projectId)!.timelineGroups = this.projects
+                            .find(p => p.id == projectId)!.timelineGroups
+                                .filter(g => g.id != timelineGroup.id) as ProjectTimeLineGroupModel[];
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+
         async addNewTimelineItemToGroup(groupId: number, timelineItem: ProjectTimeLineItemModel) {
             let request = {
                 method: "POST",
                 headers: new Headers({'content-type': 'application/json'}),
                 body: JSON.stringify(timelineItem)
             };
-
-            console.log(request.body);
             
             await fetch(`/api/projects/timelineGroups/${groupId}/timelineItems`, request)
                 .then(async response => {
@@ -72,8 +102,26 @@ export const useProjectStore = defineStore('projects', {
                 })
                 .catch(error => {
                     console.error(error);
-                    error = error;
             });
+        },
+
+        async deleteTimelineItemFromGroup(projectId: number, timelineItem: ProjectTimeLineItemModel) {
+            let request = {
+                method: "DELETE"
+            };
+
+            await fetch(`/api/projects/timelineGroups/${timelineItem.timelineGroupId}/timelineItems/${timelineItem.id}`, request)
+                .then(async _ => {
+                    this.projects
+                        .find(p => p.id == projectId)!.timelineGroups
+                            .find(g => g.id == timelineItem.timelineGroupId)!.timelineItems = this.projects
+                                .find(p => p.id == projectId)!.timelineGroups
+                                    .find(g => g.id == timelineItem.timelineGroupId)!.timelineItems
+                                        .filter(i => i.id != timelineItem.id) as ProjectTimeLineItemModel[];
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     }
 })

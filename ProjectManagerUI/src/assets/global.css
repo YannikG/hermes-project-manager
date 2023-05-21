@@ -1,0 +1,15 @@
+.danger-button {
+    background-color: #FF6969;
+    border-color: #FF6969;
+}
+.small-button {
+    padding: 0px;
+    padding-left: 7px;
+    padding-right: 7px;
+    border-radius: 3px;
+    line-height: 25px;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0px;
+    width: auto;
+}

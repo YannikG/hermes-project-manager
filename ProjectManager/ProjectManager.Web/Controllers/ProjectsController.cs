@@ -46,7 +46,8 @@ namespace ProjectManager.Web.Controllers
                 Description = model.Description,
                 ProjectEndDate = model.ProjectEndDate,
                 ProjectStartDate = model.ProjectStartDate,
-                Title = model.Title
+                Title = model.Title,
+                TimelineGroups = new List<TimelineGroupEntity>()
             };
 
             return await _projectService.CreateProjectAsync(projectEntity);

@@ -37,11 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import type { ProjectModel } from '@/models/project.model';
+import type { ProjectModel, ProjectTimeLineGroupModel } from '@/models/project.model';
 import { useProjectStore } from '@/stores/project.store';
 
 import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
     const store = useProjectStore();
+    const router = useRouter();
 
     let error = "";
 
@@ -52,12 +54,13 @@ import { reactive } from 'vue';
         configWorkHoursPerDay: 8,
         configWorkHoursPerWeek: 40,
         projectStartDate: new Date(Date.now()),
-        projectEndDate: new Date(Date.now())
+        projectEndDate: new Date(Date.now()),
+        timelineGroups: [] as ProjectTimeLineGroupModel[]
     } as ProjectModel);
 
     const createProject = ():void => {
         store.addNewProject(newProject)
-            .then(() => resetForm());
+            .then(() => router.push("/"));
     };
 
     const resetForm = ():void => {
@@ -67,6 +70,7 @@ import { reactive } from 'vue';
         newProject.configWorkHoursPerWeek = 40;
         newProject.projectStartDate = new Date(Date.now());
         newProject.projectEndDate = new Date(Date.now());
+        newProject.timelineGroups = [];
     };
 
 

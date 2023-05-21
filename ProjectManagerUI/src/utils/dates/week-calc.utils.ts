@@ -15,6 +15,5 @@ export function calcWeeksBetweenTwoDatesUtil(fromDate: Date, toDate: Date) : num
 export function calcWeekNumberOfGivenDateBetweenARangeUtil(fromDate: Date, toDate: Date, givenDate: Date) {
     
     const weeks = calcWeeksBetweenTwoDatesUtil(fromDate, toDate);
-    
     return (calcWeeksBetweenTwoDatesUtil(fromDate, givenDate)) % weeks;
 }

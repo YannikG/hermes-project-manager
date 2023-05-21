@@ -1,13 +1,15 @@
 <script lang="ts">
 import { useProjectStore } from '@/stores/project.store';
+import NoResult from '@/components/shared/NoResult.vue';
 
 export default {
-  setup() {
-    const store = useProjectStore();
-    return {
-      store
-    }
-  }
+    setup() {
+        const store = useProjectStore();
+        return {
+            store
+        };
+    },
+    components: { NoResult }
 }
 
 </script>
@@ -33,6 +35,7 @@ export default {
           </div>
         </article>
       </div>
+      <NoResult v-if="store.$state.projects.length == 0"></NoResult>
     </div>
   </main>
 </template>
